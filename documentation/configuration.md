@@ -1,4 +1,4 @@
-# Configuration Reference — WireGuard, Firewall & Kill Switch
+# Configuration Reference  WireGuard, Firewall & Kill Switch
 
 ## 1. Kernel hardening (`server/firewall/99-wireguard-security.conf`)
 * `net.ipv4.ip_forward = 1`: lets the Linux kernel on `VPN-SERVER` route IPv4 packets arriving from the `wg0` tunnel interface (`10.8.0.0/24`) to the WAN interface.
