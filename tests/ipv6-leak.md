@@ -1,4 +1,4 @@
-# Test Report 3 — IPv6 Leak Protection
+# Test Report 3 IPv6 Leak Protection
 
 ## 1. Objective
 In an IPv4 Full Tunnel configuration (`AllowedIPs = 0.0.0.0/0`), if the host or the local network advertises an IPv6 route (*Router Advertisement*), the client's operating system could send traffic to dual-stack sites over IPv6 **outside the VPN tunnel**.
