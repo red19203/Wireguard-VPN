@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-# VPN-SERVER container initialization: keys, wg0 interface, DNS, SSH and firewall.
 set -euo pipefail
 
 echo "=================================================================="
 echo "[VPN-SERVER] Initializing the WireGuard gateway (Ubuntu 24.04)"
 echo "=================================================================="
 
-# Interfaces are looked up by address, since Docker assigns the names.
 WAN_IF=$(ip -o -4 addr show | awk '/172\.28\.0\./ {print $2; exit}')
 MGMT_IF=$(ip -o -4 addr show | awk '/192\.168\.56\./ {print $2; exit}')
 LAB_IF=$(ip -o -4 addr show | awk '/192\.168\.57\./ {print $2; exit}')
@@ -16,16 +14,13 @@ echo "  - WAN  (VMnet8 / 172.28.0.10)   : ${WAN_IF}"
 echo "  - MGMT (VMnet1 / 192.168.56.10) : ${MGMT_IF}"
 echo "  - LAB  (VMnet2 / 192.168.57.1)  : ${LAB_IF}"
 
-# The default route goes through the WAN network only.
 ip route del default 2>/dev/null || true
 ip route add default via 172.28.0.1 dev "${WAN_IF}"
 
-# Keys and configuration files must only be readable by root.
 umask 077
 mkdir -p /etc/wireguard /shared_wg /etc/dnsmasq.d
 chmod 700 /etc/wireguard /shared_wg
 
-# Keys are only generated on first start, so they stay stable across restarts.
 if [ ! -f /etc/wireguard/server_private.key ]; then
     echo "[VPN-SERVER] Generating WireGuard key pairs..."
     wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
@@ -134,9 +129,6 @@ iptables -A INPUT -i "${MGMT_IF}" -s 192.168.56.0/24 -p icmp -j ACCEPT
 iptables -A INPUT -i "${LAB_IF}" -s 192.168.57.0/24 -d 192.168.57.1 -p icmp --icmp-type echo-request -j ACCEPT
 iptables -A INPUT -i "${LAB_IF}" -s 192.168.57.0/24 -d 192.168.57.1 -p udp --dport 51820 -j ACCEPT
 
-# UDP 51820 is also opened regardless of interface, so that a smartphone can
-# connect through the port published by the Docker host. The route to
-# 192.168.1.0/24 lets the server answer devices on the host's local network.
 iptables -A INPUT -p udp --dport 51820 -j ACCEPT
 ip route replace 192.168.1.0/24 via 192.168.56.1 2>/dev/null || true
 
