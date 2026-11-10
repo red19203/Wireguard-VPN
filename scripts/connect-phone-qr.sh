@@ -3,7 +3,6 @@
 # scanned with the WireGuard app.
 # Usage: ./scripts/connect-phone-qr.sh <host-ip>
 # The address must be that of the machine publishing port 51820/udp, reachable
-# from the phone. The default value is the one from the project's original network.
 set -euo pipefail
 HOST_IP="${1:-192.168.1.36}"
 
