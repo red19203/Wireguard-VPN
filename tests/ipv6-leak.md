@@ -25,4 +25,3 @@ docker exec vpn-client ip -6 addr
 docker exec vpn-client ip -6 route
 # Expected: no output (empty)
 ```
-**Validated result**: No interface has an IPv6 address, and any IPv6 connection attempt (`ping -6` or `curl -6`) fails immediately without sending a single network packet.
