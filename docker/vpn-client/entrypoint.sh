@@ -10,8 +10,6 @@ echo "=================================================================="
 LAB_IF=$(ip -o -4 addr show | awk '/192\.168\.57\./ {print $2; exit}')
 echo "[VPN-CLIENT] Isolated network interface detected: ${LAB_IF} (192.168.57.10/24)"
 
-# 1. Initial state required by the specification (section 6): no default
-#    gateway and no DNS until the tunnel is up.
 ip route del default 2>/dev/null || true
 echo "# Initial isolation: no DNS before the VPN is established" > /etc/resolv.conf
 
