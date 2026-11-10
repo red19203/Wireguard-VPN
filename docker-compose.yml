@@ -1,0 +1,121 @@
+services:
+  # WAN target: simulates the Internet on the VMnet8 side. It returns the source
+  # address it sees, which makes it possible to check that the server's NAT works.
+  wan-target:
+    build:
+      context: ./docker/wan-target
+    container_name: wg-wan-target
+    hostname: wan-target
+    restart: unless-stopped
+    networks:
+      wan_net:
+        ipv4_address: 172.28.0.100
+
+  # VPN server: equivalent of the VPN-SERVER VM (Ubuntu 24.04 LTS).
+  #   - wan_net        (VMnet8) : 172.28.0.10/24, WAN access and NAT
+  #   - mgmt_net       (VMnet1) : 192.168.56.10/24, administration
+  #   - client_lab_net (VMnet2) : 192.168.57.1/24, isolated client network
+  #   - wg0                     : 10.8.0.1/24, listening on 51820/udp
+  # Port 51820/udp is published on the host so that a real smartphone can
+  # connect over the local Wi-Fi.
+  vpn-server:
+    build:
+      context: ./docker/vpn-server
+    container_name: vpn-server
+    hostname: vpn-server
+    restart: unless-stopped
+    ports:
+      - "51820:51820/udp"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=1
+      - net.ipv6.conf.default.disable_ipv6=1
+      - net.ipv6.conf.lo.disable_ipv6=1
+    volumes:
+      - wg_shared:/shared_wg
+      - ./server:/opt/reference-configs/server:ro
+    depends_on:
+      - wan-target
+    networks:
+      wan_net:
+        ipv4_address: 172.28.0.10
+      mgmt_net:
+        ipv4_address: 192.168.56.10
+      client_lab_net:
+        ipv4_address: 192.168.57.1
+
+  # VPN client: equivalent of the VPN-CLIENT VM, attached to VMnet2 only.
+  # The two environment variables allow disabling the automatic connection or
+  # the Kill Switch during manual testing.
+  vpn-client:
+    build:
+      context: ./docker/vpn-client
+    container_name: vpn-client
+    hostname: vpn-client
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=1
+      - net.ipv6.conf.default.disable_ipv6=1
+      - net.ipv6.conf.lo.disable_ipv6=1
+    environment:
+      - AUTO_CONNECT_VPN=${AUTO_CONNECT_VPN:-true}
+      - ENABLE_KILL_SWITCH=${ENABLE_KILL_SWITCH:-true}
+    volumes:
+      - wg_shared:/shared_wg:ro
+      - ./client:/opt/reference-configs/client:ro
+    depends_on:
+      - vpn-server
+    networks:
+      client_lab_net:
+        ipv4_address: 192.168.57.10
+
+  # Admin workstation: equivalent of the host PC on VMnet1. It is used to check
+  # that SSH is only reachable from the management network.
+  mgmt-admin:
+    build:
+      context: ./docker/mgmt-admin
+    container_name: mgmt-admin
+    hostname: mgmt-admin
+    restart: unless-stopped
+    depends_on:
+      - vpn-server
+    networks:
+      mgmt_net:
+        ipv4_address: 192.168.56.50
+
+volumes:
+  # Shared volume: the server drops the client configuration here and the
+  # client mounts it read-only.
+  wg_shared:
+
+networks:
+  wan_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+          gateway: 172.28.0.1
+
+  mgmt_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.56.0/24
+          gateway: 192.168.56.1
+
+  # Internal network: Docker sets up no route to the outside.
+  client_lab_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 192.168.57.0/24
+          gateway: 192.168.57.254

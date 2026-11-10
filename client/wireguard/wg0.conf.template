@@ -1,0 +1,19 @@
+# /etc/wireguard/wg0.conf (VPN-CLIENT)
+
+[Interface]
+Address = 10.8.0.2/24
+PrivateKey = <REPLACE_WITH_CLIENT_PRIVATE_KEY>
+# DNS is the VPN server's resolver, which prevents DNS leaks
+DNS = 10.8.0.1
+
+# The Kill Switch is applied when the tunnel comes up and kept when it goes down
+PostUp = /etc/wireguard/kill-switch.sh enable
+PreDown = /etc/wireguard/kill-switch.sh keep-locked
+
+[Peer]
+PublicKey = <REPLACE_WITH_SERVER_PUBLIC_KEY>
+PresharedKey = <REPLACE_WITH_PRESHARED_KEY>
+Endpoint = 192.168.57.1:51820
+# IPv4 Full Tunnel: all traffic (0.0.0.0/0) goes through wg0
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25

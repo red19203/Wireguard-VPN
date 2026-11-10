@@ -1,0 +1,16 @@
+# Private keys, secrets and generated configurations containing secrets
+*.key
+*.psk
+*private*
+*secret*
+.env
+server/wireguard/wg0.conf
+client/wireguard/wg0.conf
+docker/shared_wg/
+
+# Network captures and temporary files
+*.pcap
+*.pcapng
+*.log
+*.swp
+.DS_Store

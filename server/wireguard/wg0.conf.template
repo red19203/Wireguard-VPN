@@ -1,0 +1,21 @@
+# /etc/wireguard/wg0.conf (VPN-SERVER)
+# The file must be mode 600: sudo chmod 600 /etc/wireguard/wg0.conf
+# This template only contains placeholder values. Real keys are generated with
+# ./scripts/generate-keys.sh and must never be committed.
+
+[Interface]
+Address = 10.8.0.1/24
+ListenPort = 51820
+PrivateKey = <REPLACE_WITH_SERVER_PRIVATE_KEY>
+SaveConfig = false
+
+# Routing and NAT rules are added and removed by a dedicated script each time
+# the interface goes up or down.
+PostUp = /etc/wireguard/iptables-hardening.sh up
+PostDown = /etc/wireguard/iptables-hardening.sh down
+
+[Peer]
+# Peer: VPN-CLIENT (Ubuntu 24.04), restricted to its own tunnel address
+PublicKey = <REPLACE_WITH_CLIENT_PUBLIC_KEY>
+PresharedKey = <REPLACE_WITH_PRESHARED_KEY>
+AllowedIPs = 10.8.0.2/32
