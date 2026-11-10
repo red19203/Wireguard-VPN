@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Functional and security validation test suite (section 8 of the specification).
 # The exit code is the number of failed tests.
 set -euo pipefail
 
