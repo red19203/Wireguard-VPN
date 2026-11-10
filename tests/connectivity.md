@@ -1,4 +1,4 @@
-# Test Report 1 — Connectivity & Full Tunnel (`0.0.0.0/0`)
+# Test Report 1 Connectivity & Full Tunnel (`0.0.0.0/0`)
 
 ## 1. Objective
 Verify the client's initial isolation on the `192.168.57.0/24` segment before the VPN is enabled, then validate that the WireGuard tunnel (`10.8.0.0/24`) comes up and that all Internet traffic leaves through the server's NAT (`Full Tunnel`).
