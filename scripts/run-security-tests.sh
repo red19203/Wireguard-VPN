@@ -19,7 +19,7 @@ check_test() {
 }
 
 echo "========================================================================"
-echo "  AUTOMATED TEST SUITE — SECURE WIREGUARD VPN GATEWAY"
+echo "  AUTOMATED TEST SUITE SECURE WIREGUARD VPN GATEWAY"
 echo "========================================================================"
 
 echo ""
