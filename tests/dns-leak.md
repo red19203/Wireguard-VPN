@@ -1,4 +1,4 @@
-# Test Report 2 — DNS Leak Protection
+# Test Report 2 DNS Leak Protection
 
 ## 1. Objective
 Ensure that no DNS query sent by `VPN-CLIENT` leaves in clear text on the local `192.168.57.0/24` network or towards a local ISP resolver, and that 100% of DNS resolutions go through the encrypted `wg0` tunnel to `10.8.0.1`.
