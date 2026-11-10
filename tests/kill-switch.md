@@ -1,4 +1,4 @@
-# Test Report 4 — Kill Switch Validation & Firewall Audit
+# Test Report 4 Kill Switch Validation & Firewall Audit
 
 ## 1. Objective
 Show that if the WireGuard tunnel (`wg0`) stops or fails, `VPN-CLIENT` immediately blocks any attempt to reach the Internet (`Fail-Closed`), so the client's real IP address is never exposed.
