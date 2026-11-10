@@ -1,6 +1,4 @@
 FROM ubuntu:24.04
-# VPN server: WireGuard, iptables, dnsmasq for the tunnel DNS, sshd for
-# administration and qrencode for enrolling a smartphone.
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wireguard wireguard-tools \
