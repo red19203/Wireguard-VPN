@@ -20,4 +20,3 @@ docker exec vpn-client dig +short @10.8.0.1 wan-target.lab
 # 3. Use tcpdump to check that no port 53 packet travels in clear text outside the tunnel
 docker exec vpn-server timeout 3 tcpdump -ni any port 53
 ```
-**Validated result**: DNS packets (`UDP 53`) only appear on the encrypted `wg0` interface (`10.8.0.2 -> 10.8.0.1`) and never in clear text on the `192.168.57.0/24` network.
