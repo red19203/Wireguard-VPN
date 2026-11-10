@@ -1,5 +1,4 @@
 FROM ubuntu:24.04
-# Minimal image: Python for the HTTP server, network tools for diagnostics.
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 iproute2 iputils-ping netcat-openbsd ca-certificates \
