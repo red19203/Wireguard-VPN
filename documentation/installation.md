@@ -1,4 +1,4 @@
-# Installation Guide — Docker & VMware Workstation (Ubuntu 24.04 LTS)
+# Installation Guide Docker & VMware Workstation (Ubuntu 24.04 LTS)
 
 ## Option A: Automated deployment with Docker containers (recommended for a quick test)
 
