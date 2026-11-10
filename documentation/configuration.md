@@ -6,7 +6,7 @@
 * `net.ipv4.conf.all.rp_filter = 1`: enables reverse path filtering against IP spoofing.
 
 ## 2. Key generation and protection
-WireGuard relies on Curve25519 for key exchange, ChaCha20-Poly1305 for authenticated encryption and BLAKE2s for hashing. A symmetric preshared key (`PresharedKey`) is added as an extra layer of post-quantum resistance:
+WireGuard relies on Curve25519 for key exchange, ChaCha20-Poly1305 for authenticated encryption and BLAKE2s for hashing. A symmetric preshared key (`PresharedKey`) is added as an extra symmetric layer:
 
 ```bash
 umask 077
