@@ -4,7 +4,7 @@
 set -euo pipefail
 
 echo "========================================================================"
-echo "  SECURE WIREGUARD VPN GATEWAY — AUTOMATED MULTI-CONTAINER DEPLOYMENT"
+echo "  SECURE WIREGUARD VPN GATEWAY AUTOMATED MULTI-CONTAINER DEPLOYMENT"
 echo "========================================================================"
 
 if ! command -v docker >/dev/null 2>&1; then
